@@ -9,9 +9,11 @@
     "koa-router": "^7.4.0",
     "mockjs": "^1.0.1-beta3"
   },
-  "devDependencies": {},
+  "devDependencies": {
+    "nodemon": "^1.19.1"
+  },
   "scripts": {
-    "start": "node ./index.js",
+    "start": "nodemon ./index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {

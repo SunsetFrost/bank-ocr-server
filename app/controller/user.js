@@ -7,11 +7,18 @@ class User {
 
     getUsers() {
         const users = Mock.mock({
-            'list|1-10': [{
-                'id|+1': 1
-            }]
+            'users|100': [
+                {
+                'id|+1': 1,
+                'username': '@CNAME',
+                'password|6-15': '@character()',
+                'address': '@city(true)',
+                'desc': '@paragraph(1)',
+                'register-date': '@datetime("yyyy-MM-dd A HH:mm")'
+                }
+            ]
         })
-        return users;
+        return users.users;
     }
 }
 
