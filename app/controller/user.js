@@ -20,6 +20,10 @@ class User {
         })
         return users.users;
     }
+
+    login(userinfo) {
+        
+    }
 }
 
 module.exports = new User();
