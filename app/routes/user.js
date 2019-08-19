@@ -3,7 +3,6 @@ const User = require('../controller/user');
 
 router.get('/', async (ctx, next) => {
     const users = User.getUsers();
-    console.log(users);
     let response = {
         status: 200,
         users
@@ -12,13 +11,18 @@ router.get('/', async (ctx, next) => {
 })
 
 router.post('/login', async (ctx, next) => {
-    const userInfo = ctx.request.data;
+    const test = ctx.request.body;
+    console.log(test);
+    const { username, password } = ctx.request.body;
     // TODO check user
     ctx.body = {
         status: 200,
         type: 'success',
         msg: '登陆成功',
-        data: userInfo
+        data: {
+            username,
+            password
+        }
     }
 })
 
