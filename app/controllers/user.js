@@ -23,8 +23,6 @@ class User {
     async signIn(ctx) {
         let data = ctx.request.body;
 
-        console.log(data);
-
         let result = {
             status: 0,
             msg: '',
@@ -36,7 +34,6 @@ class User {
             password: data.password,
         });
 
-        console.log(userResult);
         if(userResult) {
             if(userResult.name === data.username) {
                 result.status = 1;

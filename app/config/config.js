@@ -6,7 +6,7 @@ const config = {
         password: 'bowen350',
         database: 'bank_ocr'
     },
-    isInit: false,
+    isInit: true,
 }
 
 module.exports = config;
