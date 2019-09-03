@@ -23,21 +23,30 @@ class User {
     async signIn(ctx) {
         let data = ctx.request.body;
 
+        console.log(data);
+
         let result = {
             status: 0,
             msg: '',
             data: null,
         }
 
-        let userResult = await userService.signIn(data);
+        let userResult = await userService.signIn({
+            name: data.username,
+            password: data.password,
+        });
+
+        console.log(userResult);
         if(userResult) {
-            if(userResult.name === data.name) {
+            if(userResult.name === data.username) {
                 result.status = 1;
                 result.msg = '登录成功';
             }
         } else {
             result.msg = '用户名或密码错误';
         }
+
+        ctx.body = result;
     }
 
     async signUp(ctx) {
