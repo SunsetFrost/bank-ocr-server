@@ -5,7 +5,8 @@ const config = {
         user: 'zbowen',
         password: 'bowen350',
         database: 'bank_ocr'
-    }
+    },
+    isInit: false,
 }
 
 module.exports = config;

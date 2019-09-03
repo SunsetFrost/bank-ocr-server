@@ -10,6 +10,10 @@ const { createAllTables } = require('./controllers/init');
 
 const app = new Koa();
 
+if(config.isInit) {
+    createAllTables();
+}
+
 app.use(logger());
 app.use(cors({
     origin: 'http://localhost:8080',
@@ -23,7 +27,5 @@ app.use(routes.routes(), routes.allowedMethods());
 
 app.listen(config.port);
 console.log('server listening on port ' + config.port);
-
-// createAllTables();
 
 module.exports = app;
