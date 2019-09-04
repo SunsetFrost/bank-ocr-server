@@ -7,8 +7,12 @@ const scan = {
      * @return { object }
      */
     async create(scan) {
-        let result = await db.insertData('scan', scan);
-        return result;
+        try {
+            let result = await db.insertData('scan', scan);
+            return result;            
+        } catch (error) {
+            return null;
+        }
     },
 
     /**
@@ -20,15 +24,44 @@ const scan = {
         // 遍历对象拼接查询语句
         let sqlBase = 'SELECT * from scan where ';
         for (let key in data) {
-            sqlBase += `${key}="${data[key]}" and `;
+            sqlBase += `${key}=${data[key]} and `;
         }
-        let sql = sqlBase.slice(0, str.lastIndexOf(' and '));
+        let sql = '';
+        if(JSON.stringify(data) === '{}') {
+            sql = sqlBase.slice(0, sqlBase.lastIndexOf(' where'));
+        } else {
+            sql = sqlBase.slice(0, sqlBase.lastIndexOf(' and '));
+        }
+        console.log(sql);
         let result = await db.query(sql);
-        if(!Array.isArray(result) || result.length === 0) {
-            result = null;
-        }
+        // if(!Array.isArray(result) || result.length === 0) {
+        //     result = null;
+        // }
         return result;
-    }
+    },
+
+    /**
+     * 更新扫描记录
+     * @param { object } data 更新内容
+     * @return { object } 更新结果
+     */
+    async update(data) {
+        let sqlBase = 'UPDATE scan SET ';
+        for (let key in data) {
+            if(key !== 'id') {
+                sqlBase += `${key}="${data[key]}", `;
+            }
+        }
+
+        let sql = sqlBase.slice(0, sqlBase.lastIndexOf(', '));
+        sql += `WHERE id=${data.id}`;
+        try {
+            let result = await db.query(sql);   
+            return result;
+        } catch (error) {
+            return null;
+        }
+    },
 }
 
 module.exports = scan;
