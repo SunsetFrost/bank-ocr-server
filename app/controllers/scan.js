@@ -27,10 +27,13 @@ class Scan {
         // TODO请求算法
         let data = ctx.request.body;
 
+
         // 扫描记录存入数据库
         let result = await scanService.create({
+            ...data,
             card_id: 0,
-            start_scan_time: moment().format("YYYY-MM-DD HH:mm:ss"),
+            start_scan_time: startScanTime,
+            end_scan_time: moment().format("YYYY-MM-DD HH:mm:ss"),
             scan_result: 0,
         })
         if(result) {

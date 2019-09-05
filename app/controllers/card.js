@@ -24,12 +24,11 @@ class Card {
     async create(ctx) {
         let data = ctx.request.body;
 
-        // 扫描记录存入数据库
         let result = await cardService.create({
-            number: '0',
-            user_id: 0,
+            ...data,
             create_time: moment().format("YYYY-MM-DD HH:mm:ss"),
         })
+
         if(result) {
             ctx.body = {
                 status: 200,

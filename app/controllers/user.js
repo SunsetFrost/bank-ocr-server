@@ -38,6 +38,9 @@ class User {
             if(userResult.name === data.username) {
                 result.status = 1;
                 result.msg = '登录成功';
+                result.data = {
+                    id: userResult.id
+                }
             }
         } else {
             result.msg = '用户名或密码错误';
