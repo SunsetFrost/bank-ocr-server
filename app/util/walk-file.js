@@ -12,11 +12,10 @@ const walkFile = function(  pathResolve , mime ){
 
   let fileList = {}
 
-   for( let [ i, item] of files.entries() ) {
-    let itemArr = item.split('\.')
+   for( let [ item ] of files.entries() ) {
+    let itemArr = item.toString().split('\.')
 
     let itemMime = ( itemArr.length > 1 ) ? itemArr[ itemArr.length - 1 ] : 'undefined'
-    let keyName = item + ''
     if( mime === itemMime ) {
       fileList[ item ] =  pathResolve + item
     }

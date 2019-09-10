@@ -16,7 +16,7 @@ if(config.isInit) {
 
 app.use(logger());
 app.use(cors({
-    origin: '*',
+    origin: 'http://localhost:8080',
     credentials: true,
     allowMethods: ['GET', 'POST', 'DELETE'],
     allowHeaders: ['Content-Type', 'Authorization', 'Accept'],
