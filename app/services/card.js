@@ -11,6 +11,7 @@ const card = {
             let result = await db.insertData('card', card);
             return result;
         } catch(error) {
+            console.log(error);
             return null;
         }
     },

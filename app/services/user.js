@@ -27,6 +27,7 @@ const user = {
         } else {
             result = null;
         }
+        console.log(result);
         return result;
     }
 }

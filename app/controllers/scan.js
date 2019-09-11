@@ -28,7 +28,7 @@ class Scan {
     const startScanTime = moment().format("YYYY-MM-DD HH:mm:ss");
     // 请求算法
     let data = ctx.request.body;
-    let { img } = data;
+    let { userId, img } = data;
     const { data: scanResult } = await axios.post(
       "http://100.118.118.221:10001/ocr",
       {
@@ -38,27 +38,34 @@ class Scan {
 
     // 添加银行卡
     let cardResult = null;
-    if (scanResult.data.validation) {
+    if (scanResult.data.validation === 'True') {
       cardResult = await cardService.create({
         number: scanResult.data.cardNum,
+        user_id: 0,
         type: scanResult.data.cardType,
         bank: scanResult.data.bank,
-        img,
         create_time: moment().format("YYYY-MM-DD HH:mm:ss")
       });
     }
-
     // 扫描记录存入数据库
     const result = await scanService.create({
-      card_id: cardResult ? cardResult : 0,
+      user_id: userId,
+      card_id: cardResult ? cardResult.insertId : 0,
       start_scan_time: startScanTime,
       end_scan_time: moment().format("YYYY-MM-DD HH:mm:ss"),
       scan_result: scanResult.data.validation ? 1 : 0
     });
+
     if (result) {
       ctx.body = {
         status: 200,
-        msg: "添加扫描记录成功"
+        msg: "添加扫描记录成功",
+        data: {
+          id: cardResult.insertId,
+          number: scanResult.data.cardNum,
+          type: scanResult.data.cardType,
+          bank: scanResult.data.bank,
+        }
       };
     } else {
       ctx.body = {
@@ -66,7 +73,6 @@ class Scan {
         msg: "添加扫描记录失败",
         data: null
       };
-      return;
     }
   }
 }
