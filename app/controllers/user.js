@@ -53,7 +53,8 @@ class User {
         let data = ctx.request.body;
 
         let result = await userService.create({
-            ...data,
+            name: data.username,
+            password: data.password,
             create_time: new Date().getTime(),
         })
 

@@ -27,18 +27,17 @@ class Scan {
     // 记录开始扫描时间
     const startScanTime = moment().format("YYYY-MM-DD HH:mm:ss");
     // 请求算法
-    let data = ctx.request.body;
-    let { userId, img } = data;
+    let { userId, img } = ctx.request.body;
     const { data: scanResult } = await axios.post(
       "http://100.118.118.221:10001/ocr",
       {
         image: img
       }
     );
-
+    
     // 添加银行卡
     let cardResult = null;
-    if (scanResult.data.validation === 'True') {
+    if (scanResult.data.validation === "True") {
       cardResult = await cardService.create({
         number: scanResult.data.cardNum,
         user_id: 0,
@@ -46,6 +45,12 @@ class Scan {
         bank: scanResult.data.bank,
         create_time: moment().format("YYYY-MM-DD HH:mm:ss")
       });
+    } else {
+      ctx.body = {
+        status: 0,
+        msg: scanResult.errmsg
+      };
+      return;
     }
     // 扫描记录存入数据库
     const result = await scanService.create({
@@ -64,7 +69,7 @@ class Scan {
           id: cardResult.insertId,
           number: scanResult.data.cardNum,
           type: scanResult.data.cardType,
-          bank: scanResult.data.bank,
+          bank: scanResult.data.bank
         }
       };
     } else {
