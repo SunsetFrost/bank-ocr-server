@@ -33,6 +33,7 @@ class User {
             name: data.username,
             password: data.password,
         });
+        console.log(userResult);
 
         if(userResult) {
             if(userResult.name === data.username) {

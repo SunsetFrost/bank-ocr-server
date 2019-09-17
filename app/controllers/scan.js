@@ -37,7 +37,7 @@ class Scan {
     
     // 添加银行卡
     let cardResult = null;
-    if (scanResult.data.validation === "True") {
+    if (!scanResult.ret) {
       cardResult = await cardService.create({
         number: scanResult.data.cardNum,
         user_id: 0,
