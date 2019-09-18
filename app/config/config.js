@@ -7,6 +7,17 @@ const config = {
         database: 'bank_ocr'
     },
     isInit: false,
+    session_signed_key: 'session@&',
+    session_config: {
+        key: 'koa:sess',
+        maxAge: 86400000,
+        autoCommit: true, 
+        overwrite: true, 
+        httpOnly: true, 
+        signed: true, 
+        rolling: false, 
+        renew: false, 
+    }
 }
 
 module.exports = config;

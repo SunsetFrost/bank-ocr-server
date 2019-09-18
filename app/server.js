@@ -2,6 +2,7 @@ const Koa = require("koa");
 const cors = require("@koa/cors");
 const bodyParser = require("koa-bodyparser");
 const logger = require("koa-logger");
+const session = require("koa-session");
 
 const routes = require("./routes/index");
 const config = require("./config/config");
@@ -15,14 +16,20 @@ if (config.isInit) {
 }
 
 app.use(logger());
+app.keys = [config.session_signed_key];
+app.use(session(config.session_config, app));
+
 app.use(
   cors({
-    origin: "*",
+    origin: function(ctx) {
+      return ctx.request.header.origin; 
+    },
     credentials: true,
     allowMethods: ["GET", "POST", "DELETE"],
     allowHeaders: ["Content-Type", "Authorization", "Accept"]
   })
 );
+
 app.use(
   bodyParser({
     jsonLimit: "5mb", // 控制body的parse转换大小 default 1mb
