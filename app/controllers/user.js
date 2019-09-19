@@ -1,81 +1,79 @@
-const userService = require("../services/user");
-const Mock = require("mockjs");
-const uuidV4 = require("uuid/v4");
+const Mock = require('mockjs');
+const jwt = require('jsonwebtoken');
+const userService = require('../services/user');
+const config = require('../config/config');
 
 class User {
-  constructor() {}
-
   getUsers(ctx) {
     const users = Mock.mock({
-      "users|100": [
+      'users|100': [
         {
-          "id|+1": 1,
-          username: "@CNAME",
-          "password|6-15": "@character()",
-          address: "@city(true)",
-          desc: "@paragraph(1)",
-          "register-date": '@datetime("yyyy-MM-dd A HH:mm")'
-        }
-      ]
+          'id|+1': 1,
+          username: '@CNAME',
+          'password|6-15': '@character()',
+          address: '@city(true)',
+          desc: '@paragraph(1)',
+          'register-date': '@datetime("yyyy-MM-dd A HH:mm")',
+        },
+      ],
     });
     ctx.body = users.users;
   }
 
   async signIn(ctx) {
-    let data = ctx.request.body;
+    const data = ctx.request.body;
 
-    let result = {
+    const result = {
       status: 0,
-      msg: "",
-      data: null
+      msg: '',
+      data: null,
     };
 
-    let userResult = await userService.signIn({
+    const userResult = await userService.signIn({
       name: data.username,
-      password: data.password
+      password: data.password,
     });
-    console.log(userResult);
 
     if (userResult) {
       if (userResult.name === data.username) {
-        const uid = uuidV4();
-        ctx.session.uid = uid;
-        ctx.cookies.set("uid", uid, {
+        // 生成token
+        const token = jwt.sign({
+          userId: userResult.id,
+        }, config.jwt.key);
+
+        ctx.cookies.set('token', token, {
           maxAge: 86400000,
-          httpOnly: true
+          httpOnly: true,
         });
 
         result.status = 1;
-        result.msg = "登录成功";
-        result.data = {
-          id: userResult.id
-        };
+        result.msg = '登录成功';
       }
     } else {
-      result.msg = "用户名或密码错误";
+      result.msg = '用户名或密码错误';
     }
 
     ctx.body = result;
   }
 
   async signUp(ctx) {
-    let data = ctx.request.body;
+    const data = ctx.request.body;
 
-    let result = await userService.create({
+    const result = await userService.create({
       name: data.username,
       password: data.password,
-      create_time: new Date().getTime()
+      create_time: new Date().getTime(),
     });
 
     if (result && result.insertId * 1 > 0) {
       ctx.body = {
         status: 200,
-        msg: "注册成功"
+        msg: '注册成功',
       };
     } else {
       ctx.body = {
         status: 0,
-        msg: "注册失败"
+        msg: '注册失败',
       };
     }
   }

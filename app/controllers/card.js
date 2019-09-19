@@ -1,70 +1,80 @@
-const cardService = require('../services/card');
 const moment = require('moment');
+const jwt = require('jsonwebtoken');
+const cardService = require('../services/card');
 
 class Card {
-    async getCards(ctx) {
-        let data = ctx.request.query;
+  async getCards(ctx) {
+    const data = ctx.request.query;
+    const { userId } = jwt.decode(ctx.cookies.get('token'));
 
-        let result = await cardService.query(data);
-        if(result) {
-            ctx.body = {
-                status: 200,
-                msg: '获取扫描记录成功',
-                data: result,
-            }
-        } else {
-            ctx.body = {
-                status: 0,
-                msg: '获取扫描记录失败',
-                data: null,
-            }
-        }
+    const newData = {
+      user_id: userId,
+      ...data,
+    };
+
+    const result = await cardService.query(newData);
+    if (result) {
+      ctx.body = {
+        status: 200,
+        msg: '获取扫描记录成功',
+        data: result,
+      };
+    } else {
+      ctx.body = {
+        status: 0,
+        msg: '获取扫描记录失败',
+        data: null,
+      };
     }
+  }
 
-    async create(ctx) {
-        let data = ctx.request.body;
+  async create(ctx) {
+    const data = ctx.request.body;
 
-        let result = await cardService.create({
-            ...data,
-            create_time: moment().format("YYYY-MM-DD HH:mm:ss"),
-        })
+    const result = await cardService.create({
+      ...data,
+      create_time: moment().format('YYYY-MM-DD HH:mm:ss'),
+    });
 
-        if(result) {
-            ctx.body = {
-                status: 200,
-                msg: '添加银行卡成功',
-            }
-        } else {
-            ctx.body = {
-                status: 0,
-                msg: '添加银行卡失败',
-            }
-            return;
-        }
+    if (result) {
+      ctx.body = {
+        status: 200,
+        msg: '添加银行卡成功',
+      };
+    } else {
+      ctx.body = {
+        status: 0,
+        msg: '添加银行卡失败',
+      };
     }
+  }
 
-    async updateOne(ctx) {
-        const id = ctx.params.card_id;
-        const data = ctx.request.body;
+  async updateOne(ctx) {
+    const id = ctx.params.card_id;
+    const data = ctx.request.body;
+    const { userId } = jwt.decode(ctx.cookies.get('token'));
 
-        const result = await cardService.update({
-                id,
-                ...data,
-            }
-        )
-        if(result) {
-            ctx.body = {
-                status: 200,
-                msg: '更新银行卡成功',
-            }
-        } else {
-            ctx.body = {
-                status: 0,
-                msg: '更新银行卡失败',
-            }
-            return;
-        }
+    const newData = {
+      user_id: userId,
+      ...data,
+    };
+
+    const result = await cardService.update({
+      id,
+      ...newData,
+    });
+    if (result) {
+      ctx.body = {
+        status: 200,
+        msg: '更新银行卡成功',
+      };
+    } else {
+      ctx.body = {
+        status: 0,
+        msg: '更新银行卡失败',
+      };
     }
+  }
 }
 
 module.exports = new Card();

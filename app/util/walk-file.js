@@ -1,4 +1,4 @@
-const fs = require('fs')
+const fs = require('fs');
 
 /**
  * 遍历目录下的文件目录
@@ -6,22 +6,21 @@ const fs = require('fs')
  * @param  {string} mime         遍历文件的后缀名
  * @return {object}              返回遍历后的目录结果
  */
-const walkFile = function(  pathResolve , mime ){
+const walkFile = function (pathResolve, mime) {
+  const files = fs.readdirSync(pathResolve);
 
-  let files = fs.readdirSync( pathResolve )
+  const fileList = {};
 
-  let fileList = {}
+  for (const [item] of files.entries()) {
+    const itemArr = item.toString().split('\.');
 
-   for( let [ item ] of files.entries() ) {
-    let itemArr = item.toString().split('\.')
-
-    let itemMime = ( itemArr.length > 1 ) ? itemArr[ itemArr.length - 1 ] : 'undefined'
-    if( mime === itemMime ) {
-      fileList[ item ] =  pathResolve + item
+    const itemMime = (itemArr.length > 1) ? itemArr[itemArr.length - 1] : 'undefined';
+    if (mime === itemMime) {
+      fileList[item] = pathResolve + item;
     }
   }
 
-  return fileList
-}
+  return fileList;
+};
 
-module.exports = walkFile
+module.exports = walkFile;
