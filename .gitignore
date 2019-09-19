@@ -8,4 +8,4 @@
 package-lock.json
 
 # config
-/app/config
+/app/config/*
