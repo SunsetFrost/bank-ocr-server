@@ -3,6 +3,7 @@ const Scan = require('../controllers/scan');
 
 router
   .get('/', Scan.getScans)
-  .post('/', Scan.create);
+  .post('/', Scan.create)
+  .post('/delete', Scan.delete);
 
 module.exports = router;

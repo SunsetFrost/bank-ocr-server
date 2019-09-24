@@ -35,6 +35,18 @@ app.use(
   }),
 );
 
+app.use(async (ctx, next) => {
+  try {
+    await next();
+  } catch (error) {
+    console.log(error.message);
+    ctx.body = {
+      status: 0,
+      msg: error.message,
+    };
+  }
+});
+
 app.use(routes.routes(), routes.allowedMethods());
 
 app.listen(config.port);

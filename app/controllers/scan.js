@@ -1,14 +1,19 @@
-/* eslint-disable class-methods-use-this */
 const moment = require('moment');
 const axios = require('axios');
-const jwt = require('jsonwebtoken');
 const scanService = require('../services/scan');
 const cardService = require('../services/card');
+const { getUserId } = require('../util/common');
 
 class Scan {
   async getScans(ctx) {
     const data = ctx.request.query;
-    const result = await scanService.query(data);
+
+    const userId = getUserId(ctx);
+
+    const result = await scanService.query({
+      user_id: userId,
+      ...data,
+    });
     if (result) {
       ctx.body = {
         status: 200,
@@ -16,11 +21,7 @@ class Scan {
         data: result,
       };
     } else {
-      ctx.body = {
-        status: 0,
-        msg: '获取扫描记录失败',
-        data: null,
-      };
+      throw Error('获取扫描记录失败');
     }
   }
 
@@ -80,6 +81,25 @@ class Scan {
         msg: '添加扫描记录失败',
         data: null,
       };
+    }
+  }
+
+  async delete(ctx) {
+    const { id } = ctx.request.body;
+    const userId = getUserId(ctx);
+
+    const result = await scanService.update({
+      id,
+      user_id: userId,
+      status: 1,
+    });
+    if (result) {
+      ctx.body = {
+        status: 200,
+        msg: '删除扫描记录成功',
+      };
+    } else {
+      throw Error('删除扫描记录失败');
     }
   }
 }

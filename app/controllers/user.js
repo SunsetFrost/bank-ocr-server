@@ -37,9 +37,12 @@ class User {
     if (userResult) {
       if (userResult.name === data.username) {
         // 生成token
-        const token = jwt.sign({
-          userId: userResult.id,
-        }, config.jwt.key);
+        const token = jwt.sign(
+          {
+            userId: userResult.id,
+          },
+          config.jwt.key,
+        );
 
         ctx.cookies.set('token', token, {
           maxAge: 86400000,
@@ -54,6 +57,25 @@ class User {
     }
 
     ctx.body = result;
+  }
+
+  signOut(ctx) {
+    const token = jwt.sign(
+      {
+        userId: '',
+      },
+      config.jwt.key,
+    );
+
+    ctx.cookies.set('token', token, {
+      maxAge: 86400000,
+      httpOnly: true,
+    });
+
+    ctx.body = {
+      status: 200,
+      msg: '退出登录成功',
+    };
   }
 
   async signUp(ctx) {
@@ -75,6 +97,35 @@ class User {
         status: 0,
         msg: '注册失败',
       };
+    }
+  }
+
+  async checkLogin(ctx) {
+    const { userId } = jwt.decode(ctx.cookies.get('token'));
+    if (userId && userId !== '') {
+      const user = await userService.getUserById(userId);
+      ctx.body = {
+        status: 200,
+        msg: '用户已登录',
+        data: {
+          username: user.name,
+        },
+      };
+    } else {
+      throw new Error('用户尚未登录');
+    }
+  }
+
+  async isUserExist(ctx) {
+    const { username } = ctx.request.body;
+    const result = await userService.isExist(username);
+    if (result) {
+      ctx.body = {
+        status: 200,
+        msg: '用户名可用',
+      };
+    } else {
+      throw new Error('用户名已存在');
     }
   }
 }

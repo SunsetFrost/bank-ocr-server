@@ -1,25 +1,29 @@
 const moment = require('moment');
-const jwt = require('jsonwebtoken');
 const cardService = require('../services/card');
+const { getUserId } = require('../util/common');
 
 class Card {
   async getCards(ctx) {
     const data = ctx.request.query;
-    const { userId } = jwt.decode(ctx.cookies.get('token'));
+    try {
+      const userId = getUserId(ctx);
 
-    const newData = {
-      user_id: userId,
-      ...data,
-    };
-
-    const result = await cardService.query(newData);
-    if (result) {
-      ctx.body = {
-        status: 200,
-        msg: '获取扫描记录成功',
-        data: result,
+      const newData = {
+        user_id: userId,
+        ...data,
       };
-    } else {
+
+      const result = await cardService.query(newData);
+      if (result) {
+        ctx.body = {
+          status: 200,
+          msg: '获取扫描记录成功',
+          data: result,
+        };
+      } else {
+        throw Error('获取扫描记录失败');
+      }
+    } catch (error) {
       ctx.body = {
         status: 0,
         msg: '获取扫描记录失败',
@@ -52,7 +56,7 @@ class Card {
   async updateOne(ctx) {
     const id = ctx.params.card_id;
     const data = ctx.request.body;
-    const { userId } = jwt.decode(ctx.cookies.get('token'));
+    const userId = getUserId(ctx);
 
     const newData = {
       user_id: userId,
