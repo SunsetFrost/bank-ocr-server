@@ -30,7 +30,7 @@ class Scan {
     const startScanTime = moment().format('YYYY-MM-DD HH:mm:ss');
     // 请求算法
     const { img } = ctx.request.body;
-    const userId = jwt.decode(ctx.cookies.get('token'));
+    const userId = getUserId(ctx);
     const { data: scanResult } = await axios.post(
       'http://100.118.118.221:10001/ocr',
       {

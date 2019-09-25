@@ -5,30 +5,22 @@ const { getUserId } = require('../util/common');
 class Card {
   async getCards(ctx) {
     const data = ctx.request.query;
-    try {
-      const userId = getUserId(ctx);
+    const userId = getUserId(ctx);
 
-      const newData = {
-        user_id: userId,
-        ...data,
-      };
+    const newData = {
+      user_id: userId,
+      ...data,
+    };
 
-      const result = await cardService.query(newData);
-      if (result) {
-        ctx.body = {
-          status: 200,
-          msg: '获取扫描记录成功',
-          data: result,
-        };
-      } else {
-        throw Error('获取扫描记录失败');
-      }
-    } catch (error) {
+    const result = await cardService.query(newData);
+    if (Array.isArray(result) && result.length > 0) {
       ctx.body = {
-        status: 0,
-        msg: '获取扫描记录失败',
-        data: null,
+        status: 200,
+        msg: '获取银行卡记录成功',
+        data: result,
       };
+    } else {
+      throw Error('获取银行卡记录为空');
     }
   }
 
