@@ -2,10 +2,10 @@ const db = require('../util/db');
 
 const card = {
   /**
-     * 创建银行卡记录
-     * @param { object } scan 扫描信息
-     * @return { object }
-     */
+   * 创建银行卡记录
+   * @param { object } scan 扫描信息
+   * @return { object }
+   */
   async create(data) {
     try {
       const result = await db.insertData('card', data);
@@ -16,10 +16,10 @@ const card = {
   },
 
   /**
-     * 查询银行卡记录
-     * @param { object } data 查询内容
-     * @return { object } 符合的扫描列表
-     */
+   * 查询银行卡记录
+   * @param { object } data 查询内容
+   * @return { object } 符合的扫描列表
+   */
   async query(data) {
     // 遍历对象拼接查询语句
     let sqlBase = 'SELECT * from card where ';
@@ -50,10 +50,10 @@ const card = {
   },
 
   /**
-     * 更新银行卡记录
-     * @param { object } data 更新内容
-     * @return { object } 更新结果
-     */
+   * 更新银行卡记录
+   * @param { object } data 更新内容
+   * @return { object } 更新结果
+   */
   async update(data) {
     let sqlBase = 'UPDATE card SET ';
     if (JSON.stringify(data) === '{}') {
@@ -67,12 +67,8 @@ const card = {
 
     let sql = sqlBase.slice(0, sqlBase.lastIndexOf(', '));
     sql += `WHERE id=${data.id}`;
-    try {
-      const result = await db.query(sql);
-      return result;
-    } catch (error) {
-      return null;
-    }
+    const result = await db.query(sql);
+    return result;
   },
 };
 
