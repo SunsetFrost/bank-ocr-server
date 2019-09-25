@@ -24,6 +24,22 @@ class Card {
     }
   }
 
+  async getCardsByNumber(ctx) {
+    const { number } = ctx.request.query;
+    const userId = getUserId(ctx);
+
+    const result = await cardService.queryByNumber(number, userId);
+    if (Array.isArray(result) && result.length > 0) {
+      ctx.body = {
+        status: 200,
+        msg: '获取银行卡记录成功',
+        data: result,
+      };
+    } else {
+      throw Error('获取银行卡记录为空');
+    }
+  }
+
   async create(ctx) {
     const data = ctx.request.body;
 

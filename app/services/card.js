@@ -40,6 +40,15 @@ const card = {
     return result;
   },
 
+  async queryByNumber(number, userId) {
+    const sql = `SELECT * from card where number like '%${number}%' and user_id = ${userId}`;
+    const result = await db.query(sql);
+    if (!Array.isArray(result) || result.length === 0) {
+      return null;
+    }
+    return result;
+  },
+
   /**
      * 更新银行卡记录
      * @param { object } data 更新内容
